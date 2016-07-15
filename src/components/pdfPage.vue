@@ -9,6 +9,34 @@
 </style>
 <template>
   <p class="container">
-    <embed src="static/pdf/PDF里的中国力量.pdf" class="pdf-page">
+    <embed src="{{list.file_path}}" class="pdf-page">
   </p>
 </template>
+<script>
+import config from '../utils/config.js';
+export default {
+  ready: function () {
+    let _self = this;
+    this.$http.get(config.SERVER_URL + _self.$route.params.courseid, {}, {
+      headers: {
+        "X-Requested-With": "XMLHttpRequest"
+      },
+      emulateJSON: true
+    }).then(function (response) {
+      let data = response.data.TrainingSections;
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].section_id === Number(_self.$route.params.sectionid)) {
+          this.list = data[i];
+        }
+      }
+    }, function (response) {
+            // handle error
+    });
+  },
+  data () {
+    return {
+      list: {}
+    };
+  }
+};
+</script>

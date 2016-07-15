@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import config from '../utils/config.js';
 import Group from 'vux/src/components/group';
 import Panel from 'vux/src/components/panel';
 import XHeader from 'vux/src/components/x-header';
@@ -19,27 +20,30 @@ export default {
     Group,
     XHeader
   },
+  ready: function () {
+    this.$http.get(config.SERVER_URL, {}, {
+      headers: {
+        "X-Requested-With": "XMLHttpRequest"
+      },
+      emulateJSON: true
+    }).then(function (response) {
+      let data = response.data;
+      let jsonArray = [];
+      for (let i = 0; i < data.length; i++) {
+        let row = {};
+        row.title = data[i].training_name;
+        row.desc = data[i].training_desc;
+        row.url = '/Course/' + data[i].training_id;
+        jsonArray.push(row);
+      }
+      this.list = jsonArray;
+    }, function (response) {
+            // handle error
+    });
+  },
   data () {
     return {
-      type: '1',
-      list: [{
-        src: 'static/image/pdf.png',
-        title: 'Linux入门教程',
-        desc: '由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。',
-        url: '/Course/0'
-      }, {
-        src: 'static/image/bofangqi.jpg',
-        title: 'Javascrip基础教程',
-        desc: '由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。',
-        url: {
-          path: '/Course/1',
-          replace: false
-        }
-      }],
-      footer: {
-        title: '查看更多',
-        url: ''
-      }
+      list: []
     };
   }
 };

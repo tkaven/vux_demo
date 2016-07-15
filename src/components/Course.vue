@@ -1,46 +1,42 @@
 <template>
-  <x-header :left-options="{showBack: true, backText: ''}">{{courseName}}</x-header>
+  <x-header :left-options="{showBack: true, backText: ''}">{{training_name}}</x-header>
   <div>
     <group title="课程列表">
-      <cell v-for="item in items" :title="item.title" is-link :link="item.link"></cell>
+      <cell v-for="item in items" :title="item.section_name" is-link :link="item.link"></cell>
     </group>
   </div>
 </template>
 <script>
+import config from '../utils/config.js';
 import Group from 'vux/src/components/group';
 import Cell from 'vux/src/components/cell';
 import XHeader from 'vux/src/components/x-header';
-const data = {
-  list: [{
-    courseName: 'Linux教程',
-    items: [{
-      title: '第一章: 简介',
-      link: '/pdfPage/1'
-    },
-      {title: '第二章: Linux基础命令'},
-      {title: '第三章: Linux高阶提高'},
-      {title: '第四章: Linux数据相关指导'}
-    ]
-  }, {
-    courseName: 'Javascrip教程',
-    items: [{
-      title: '第一章: 简介',
-      link: '/videoPage/1'
-    },
-      {title: '第二章: javascript基础命令'},
-      {title: '第三章: javascript高阶提高'},
-      {title: '第四章: javascript数据相关指导'}
-    ]
-  }]
-};
 export default {
   components: {
     Group,
     Cell,
     XHeader
   },
+  ready: function () {
+    let _routeId = this.$route.params.courseid;
+    this.$http.get(config.SERVER_URL + _routeId, {}, {
+      headers: {
+        "X-Requested-With": "XMLHttpRequest"
+      },
+      emulateJSON: true
+    }).then(function (response) {
+      let data = response.data;
+      this.training_name = data.training_name;
+      this.items = data.TrainingSections;
+    }, function (response) {
+            // handle error
+    });
+  },
   data () {
-    return data.list[this.$route.params.id];
+    return {
+      training_name: '',
+      items: []
+    };
   }
 };
 console.log();

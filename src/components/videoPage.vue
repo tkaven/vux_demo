@@ -1,30 +1,47 @@
 <template>
-  <x-header :left-options="{showBack: true, backText: ''}">{{courseName}}</x-header>
+  <x-header :left-options="{showBack: true, backText: ''}">{{list.section_name}}</x-header>
   <article class="weui_article">
     <h1>汉拓培训</h1>
     <section>
-      <h2 class="title">{{title}}</h2>
+      <h2 class="title">{{list.section_name}}</h2>
       <section>
         <h3>章节内容：</h3>
-        <p>{{desc}}</p>
+        <p>{{list.section_desc}}</p>
       </section>
       <video id="vid" width="400" controls="controls">
-        <source src="static/video/movie.ogg">
+        <source src="{{list.file_path}}">
       </video>
     </section>
   </article>
 </template>
 <script>
+import config from '../utils/config.js';
 import XHeader from 'vux/src/components/x-header';
 export default {
   components: {
     XHeader
   },
+  ready: function () {
+    let _self = this;
+    this.$http.get(config.SERVER_URL + _self.$route.params.courseid, {}, {
+      headers: {
+        "X-Requested-With": "XMLHttpRequest"
+      },
+      emulateJSON: true
+    }).then(function (response) {
+      let data = response.data.TrainingSections;
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].section_id === Number(_self.$route.params.sectionid)) {
+          this.list = data[i];
+        }
+      }
+    }, function (response) {
+            // handle error
+    });
+  },
   data () {
     return {
-      courseName: 'Linux教程',
-      title: '简介',
-      desc: 'Linux是一套免费使用和自由传播的类Unix操作系统，是一个基于POSIX和UNIX的多用户、多任务、支持多线程和多CPU的操作系统。它能运行主要的UNIX工具软件、应用程序和网络协议。'
+      list: {}
     };
   }
 };
