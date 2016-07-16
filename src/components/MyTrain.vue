@@ -14,10 +14,10 @@
 }
 </style>
 <template>
-    <x-header :left-options="{showBack: true, backText: ''}">培训课程</x-header>
+    <x-header :left-options="{showBack: true, backText: ''}">我的培训课程</x-header>
   <div>
     <group>
-        <panel header="培训资料列表" @on-click-footer="getDataFromApi" :footer="footer" :list="list" :type="type"></panel>
+        <panel header="我的培训资料列表" @on-click-footer="getDataFromApi" :footer="footer" :list="list" :type="type"></panel>
     </group>
     <div class="spinner-contianer">
       <spinner type="lines"></spinner>
@@ -27,6 +27,7 @@
 
 <script>
 import config from '../utils/config.js';
+import wxauth from '../utils/wxauth.js';
 import Group from 'vux/src/components/group';
 import Panel from 'vux/src/components/panel';
 import XHeader from 'vux/src/components/x-header';
@@ -39,12 +40,20 @@ export default {
     Spinner
   },
   ready: function () {
-    this.getDataFromApi();
+    wxauth.goAuth();
+    this.$http.get(config.AUTH_URL, {}, {
+      headers: {
+        "X-Requested-With": "XMLHttpRequest"
+      },
+      emulateJSON: true
+    }).then(function (response) {
+      this.getDataFromApi();
+    });
   },
   methods: {
     getDataFromApi () {
       let pageId = this.pageId;
-      this.$http.get(config.SERVER_URL + '?page=' + pageId, {}, {
+      this.$http.get(config.SERVER_URL + 'mine?page=' + pageId, {}, {
         headers: {
           "X-Requested-With": "XMLHttpRequest"
         },

@@ -8,8 +8,7 @@
         <h3>章节内容：</h3>
         <p>{{list.section_desc}}</p>
       </section>
-      <video id="vid" width="400" controls="controls">
-        <source src="{{list.file_path}}">
+      <video id="vid" width="400" controls="controls"  :src="list.file_path">
       </video>
     </section>
   </article>

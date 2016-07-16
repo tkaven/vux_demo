@@ -9,7 +9,7 @@
 </style>
 <template>
   <p class="container">
-    <embed src="{{list.file_path}}" class="pdf-page">
+    <embed :src="list.file_path" class="pdf-page">
   </p>
 </template>
 <script>

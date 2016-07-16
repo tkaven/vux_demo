@@ -6,6 +6,7 @@ import VueRouter from 'vue-router';
 import Course from './components/Course';
 import Video from './components/videoPage';
 import Pdf from './components/pdfPage';
+import MyTrain from './components/MyTrain';
 
 Vue.use(vueResource);
 Vue.use(VueRouter);
@@ -22,8 +23,11 @@ router.map({
   '/Course/:courseid/SectionVideo/:sectionid': {
     component: Video
   },
-  'Course/:courseid/SectionPDF/:sectionid': {
+  '/Course/:courseid/SectionPDF/:sectionid': {
     component: Pdf
+  },
+  '/My': {
+    component: MyTrain
   }
 });
 
