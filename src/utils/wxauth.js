@@ -1,7 +1,7 @@
 module.exports = {
   goAuth: function () {
-    var _pageurl = window.location.href;
-    window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx00a9833748f6acef&redirect_uri=' + _pageurl + '?corpId=wx00a9833748f6acef&response_type=code&scope=snsapi_base&state=#wechat_redirect';
+    var _pageurl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx00a9833748f6acef&redirect_uri=http://mscrm.huntor.cn:10116/?corpId=wx00a9833748f6acef&response_type=code&scope=snsapi_base&state=#wechat_redirect';
+    location.href = _pageurl;
   },
   GetQueryString: function (name) {
     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");

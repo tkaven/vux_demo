@@ -22,7 +22,7 @@ export default {
   },
   ready: function () {
     let _self = this;
-    this.$http.get(config.SERVER_URL + _self.$route.params.courseid, {}, {
+    this.$http.get(config.SERVER_URL + 'section?training_id=' + _self.$route.params.courseid, {}, {
       headers: {
         "X-Requested-With": "XMLHttpRequest"
       },

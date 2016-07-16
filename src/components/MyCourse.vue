@@ -2,7 +2,7 @@
   <x-header :left-options="{showBack: true, backText: ''}">{{training_name}}</x-header>
   <div>
     <group title="我的课程列表">
-      <cell v-for="item in items" :title="item.section_name" is-link :link="item.link"  value="已阅读"></cell>
+      <cell v-for="item in items" :title="item.section_name" is-link :link="item.link"></cell>
     </group>
   </div>
 </template>
