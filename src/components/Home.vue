@@ -45,9 +45,9 @@ export default {
     let code = wxauth.getSingleQueryString('code');
     let corpId = wxauth.getSingleQueryString('corpId');
     let ls = window.localStorage.userid;
-    // if (!code) {
-    //   location.href = wxauth.goAuth();
-    // }
+    if (!code) {
+      location.href = wxauth.goAuth();
+    }
     if (!ls || ls === '读取数据有误') {
       $.ajax({
         type: 'GET',
