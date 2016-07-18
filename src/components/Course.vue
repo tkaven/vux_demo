@@ -1,12 +1,13 @@
 <template>
   <x-header :left-options="{showBack: true, backText: ''}">{{training_name}}</x-header>
   <div>
-    <group title="我的课程列表">
-      <cell v-for="item in items" :title="item.section_name" is-link :link="item.link"  value="已阅读"></cell>
+    <group title="课程列表">
+      <cell v-for="item in items" :title="item.section_name" is-link :link="item.link"></cell>
     </group>
   </div>
 </template>
 <script>
+import $ from 'jquery';
 import config from '../utils/config.js';
 import Group from 'vux/src/components/group';
 import Cell from 'vux/src/components/cell';
@@ -18,19 +19,30 @@ export default {
     XHeader
   },
   ready: function () {
+    let self = this;
     let _routeId = this.$route.params.courseid;
-    this.$http.get(config.SERVER_URL + 'section?training_id=' + _routeId, {}, {
-      headers: {
-        "X-Requested-With": "XMLHttpRequest"
-      },
-      emulateJSON: true
-    }).then(function (response) {
-      let data = response.data;
-      this.training_name = data.training_name;
-      this.items = data.TrainingSections;
-    }, function (response) {
-            // handle error
+    $.ajax({
+      type: 'GET',
+      url: config.SERVER_URL + 'section',
+      data: {training_id: _routeId},
+      success: function (data) {
+        var res = data;
+        self.training_name = res.training_name;
+        self.items = res.TrainingSections;
+      }
     });
+    // this.$http.get(config.SERVER_URL + 'section?training_id=' + _routeId, {}, {
+    //   headers: {
+    //     "X-Requested-With": "XMLHttpRequest"
+    //   },
+    //   emulateJSON: true
+    // }).then(function (response) {
+    //   let res = response.data;
+    //   data.training_name = res.training_name;
+    //   data.items = res.TrainingSections;
+    // }, function (response) {
+    //         // handle error
+    // });
   },
   data () {
     return {

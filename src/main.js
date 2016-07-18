@@ -1,12 +1,13 @@
 import Vue from 'vue';
 import vueResource from 'vue-resource';
 import App from './App';
-import Home from './components/Home';
+import Home from './components/home';
 import VueRouter from 'vue-router';
-import Course from './components/Course';
-import Video from './components/videoPage';
-import Pdf from './components/pdfPage';
-import MyTrain from './components/MyTrain';
+import Course from './components/course';
+import Video from './components/video-page';
+import Pdf from './components/pdf-page';
+import MyTrain from './components/my-train';
+import MyCourse from './components/my-course';
 
 Vue.use(vueResource);
 Vue.use(VueRouter);
@@ -28,6 +29,9 @@ router.map({
   },
   '/My': {
     component: MyTrain
+  },
+  '/MyCourse/:courseid/:userid': {
+    component: MyCourse
   }
 });
 

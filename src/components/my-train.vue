@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import $ from 'jquery';
 import config from '../utils/config.js';
 import wxauth from '../utils/wxauth.js';
 import Group from 'vux/src/components/group';
@@ -40,20 +41,31 @@ export default {
     Spinner
   },
   ready: function () {
-    wxauth.goAuth();
-    this.$http.get(config.AUTH_URL, {}, {
-      headers: {
-        "X-Requested-With": "XMLHttpRequest"
-      },
-      emulateJSON: true
-    }).then(function (response) {
-      this.getDataFromApi();
-    });
+    let code = wxauth.getSingleQueryString('code');
+    let corpId = wxauth.getSingleQueryString('corpId');
+    let ls = window.localStorage.userid;
+    if (!code) {
+      location.href = wxauth.goAuth();
+    }
+    if (!ls || ls === '读取数据有误') {
+      this.$http.get(config.AUTH_URL + '?corpId=' + corpId + '&code=' + code, {}, {
+        headers: {
+          "X-Requested-With": "XMLHttpRequest"
+        },
+        emulateJSON: true
+      }).then(function (response) {
+        console.log(response.data);
+        window.localStorage.userid = response.data.userId;
+        this.getDataFromApi(response.data.userId);
+      });
+    } else {
+      this.getDataFromApi(ls);
+    }
   },
   methods: {
-    getDataFromApi () {
+    getDataFromApi (uid) {
       let pageId = this.pageId;
-      this.$http.get(config.SERVER_URL + 'mine?page=' + pageId, {}, {
+      this.$http.get(config.SERVER_URL + 'mine?page=' + pageId + '&userId=' + uid, {}, {
         headers: {
           "X-Requested-With": "XMLHttpRequest"
         },
@@ -69,7 +81,7 @@ export default {
           let row = {};
           row.title = data[i].training_name;
           row.desc = data[i].training_desc;
-          row.url = '/Course/' + data[i].training_id;
+          row.url = '/MyCourse/' + data[i].training_id + '/' + uid;
           jsonArray.push(row);
         }
         this.list = this.list.concat(jsonArray);
@@ -83,6 +95,7 @@ export default {
   data () {
     return {
       pageId: 0,
+      userid: 0,
       list: [],
       footer: {
         title: '查看更多'

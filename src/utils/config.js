@@ -1,4 +1,4 @@
 module.exports = {
-  'SERVER_URL': 'http://10.6.28.46:3000/trainings/',
-  'AUTH_URL': 'http://10.6.28.46:3000/auth'
+  'SERVER_URL': 'http://mscrm.huntor.cn:10116/backend/trainings/',
+  'AUTH_URL': 'http://mscrm.huntor.cn:10116/backend/auth'
 };

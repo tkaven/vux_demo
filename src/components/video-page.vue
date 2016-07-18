@@ -14,6 +14,7 @@
   </article>
 </template>
 <script>
+import $ from 'jquery';
 import config from '../utils/config.js';
 import XHeader from 'vux/src/components/x-header';
 export default {
@@ -22,6 +23,7 @@ export default {
   },
   ready: function () {
     let _self = this;
+    this.setLocal();
     this.$http.get(config.SERVER_URL + 'section?training_id=' + _self.$route.params.courseid, {}, {
       headers: {
         "X-Requested-With": "XMLHttpRequest"
@@ -37,6 +39,19 @@ export default {
     }, function (response) {
             // handle error
     });
+  },
+  methods: {
+    setLocal () {
+      this.setHistory(window.localStorage.userid);
+    },
+    setHistory (uid) {
+      this.$http.get(config.SERVER_URL + 'mine/history?training_id=' + this.$route.params.courseid + '&section_id=' + this.$route.params.sectionid + '&userId=' + uid, {}, {
+        headers: {
+          "X-Requested-With": "XMLHttpRequest"
+        },
+        emulateJSON: true
+      });
+    }
   },
   data () {
     return {
