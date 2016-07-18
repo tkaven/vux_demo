@@ -26,9 +26,8 @@ export default {
       url: config.SERVER_URL + 'section',
       data: {training_id: _routeId},
       success: function (data) {
-        var res = data;
-        self.training_name = res.training_name;
-        self.items = res.TrainingSections;
+        self.training_name = data.training_name;
+        self.items = data.TrainingSections;
       }
     });
     // this.$http.get(config.SERVER_URL + 'section?training_id=' + _routeId, {}, {

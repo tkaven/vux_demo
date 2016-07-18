@@ -17,22 +17,35 @@ import $ from 'jquery';
 import config from '../utils/config.js';
 export default {
   ready: function () {
-    let _self = this;
+    let self = this;
     this.setLocal();
-    this.$http.get(config.SERVER_URL + 'section?training_id=' + _self.$route.params.courseid, {}, {
-      headers: {
-        "X-Requested-With": "XMLHttpRequest"
-      },
-      emulateJSON: true
-    }).then(function (response) {
-      let data = response.data.TrainingSections;
-      for (let i = 0; i < data.length; i++) {
-        if (data[i].section_id === Number(_self.$route.params.sectionid)) {
-          this.list = data[i];
+    // this.$http.get(config.SERVER_URL + 'section?training_id=' + self.$route.params.courseid, {}, {
+    //   headers: {
+    //     "X-Requested-With": "XMLHttpRequest"
+    //   },
+    //   emulateJSON: true
+    // }).then(function (response) {
+    //   let data = response.data.TrainingSections;
+    //   for (let i = 0; i < data.length; i++) {
+    //     if (data[i].section_id === Number(self.$route.params.sectionid)) {
+    //       this.list = data[i];
+    //     }
+    //   }
+    // }, function (response) {
+    //         // handle error
+    // });
+    $.ajax({
+      type: 'GET',
+      url: config.SERVER_URL,
+      data: {training_id: self.$route.params.courseid},
+      success: function (data) {
+        let res = data.TrainingSections;
+        for (let i = 0; i < res.length; i++) {
+          if (res[i].section_id === Number(self.$route.params.sectionid)) {
+            self.list = res[i];
+          }
         }
       }
-    }, function (response) {
-            // handle error
     });
   },
   methods: {
@@ -40,11 +53,19 @@ export default {
       this.setHistory(window.localStorage.userid);
     },
     setHistory (uid) {
-      this.$http.get(config.SERVER_URL + 'mine/history?training_id=' + this.$route.params.courseid + '&section_id=' + this.$route.params.sectionid + '&userId=' + uid, {}, {
-        headers: {
-          "X-Requested-With": "XMLHttpRequest"
-        },
-        emulateJSON: true
+      let self = this;
+      // this.$http.get(config.SERVER_URL + 'mine/history?training_id=' + this.$route.params.courseid + '&section_id=' + this.$route.params.sectionid + '&userId=' + uid, {}, {
+      //   headers: {
+      //     "X-Requested-With": "XMLHttpRequest"
+      //   },
+      //   emulateJSON: true
+      // });
+      $.ajax({
+        type: 'GET',
+        url: config.SERVER_URL + 'mine/history',
+        data: {training_id: self.$route.params.courseid, section_id: self.$route.params.sectionid, userId: uid},
+        success: function (data) {
+        }
       });
     }
   },

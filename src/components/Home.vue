@@ -41,13 +41,23 @@ export default {
     Spinner
   },
   ready: function () {
+    let self = this;
     let code = wxauth.getSingleQueryString('code');
     let corpId = wxauth.getSingleQueryString('corpId');
     let ls = window.localStorage.userid;
-    if (!code) {
-      location.href = wxauth.goAuth();
-    }
+    // if (!code) {
+    //   location.href = wxauth.goAuth();
+    // }
     if (!ls || ls === '读取数据有误') {
+      $.ajax({
+        type: 'GET',
+        url: config.AUTH_URL,
+        data: {corpId: corpId, code: code},
+        success: function (data) {
+          window.localStorage.userid = data.userId;
+          self.getDataFromApi();
+        }
+      });
       // this.$http.get(config.AUTH_URL + '?corpId=' + corpId + '&code=' + code, {}, {
       //   headers: {
       //     "X-Requested-With": "XMLHttpRequest"
@@ -57,28 +67,6 @@ export default {
       //   window.localStorage.userid = response.data.userId;
       //   this.getDataFromApi();
       // });
-      $.ajax({
-        type: 'GET',
-        url: config.SERVER_URL,
-        data: {page: pageId},
-        success: function (data) {
-          let el = document.querySelector('.spinner-contianer');
-          let jsonArray = [];
-          if (data.length === 0) {
-            this.footer.title = '没有更多了';
-          }
-          for (let i = 0; i < data.length; i++) {
-            let row = {};
-            row.title = data[i].training_name;
-            row.desc = data[i].training_desc;
-            row.url = '/Course/' + data[i].training_id;
-            jsonArray.push(row);
-          }
-          this.list = this.list.concat(jsonArray);
-          el.style.display = 'none';
-          this.pageId++;
-        }
-      });
     } else {
       this.getDataFromApi();
     }
@@ -86,6 +74,7 @@ export default {
   methods: {
     getDataFromApi () {
       let pageId = this.pageId;
+      let self = this;
       // this.$http.get(config.SERVER_URL + '?page=' + pageId, {}, {
       //   headers: {
       //     "X-Requested-With": "XMLHttpRequest"
@@ -120,7 +109,7 @@ export default {
           let el = document.querySelector('.spinner-contianer');
           let jsonArray = [];
           if (data.length === 0) {
-            this.footer.title = '没有更多了';
+            self.footer.title = '没有更多了';
           }
           for (let i = 0; i < data.length; i++) {
             let row = {};
@@ -129,9 +118,9 @@ export default {
             row.url = '/Course/' + data[i].training_id;
             jsonArray.push(row);
           }
-          this.list = this.list.concat(jsonArray);
+          self.list = self.list.concat(jsonArray);
           el.style.display = 'none';
-          this.pageId++;
+          self.pageId++;
         }
       });
     }

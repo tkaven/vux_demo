@@ -31,20 +31,30 @@ export default {
   ready: function () {
     let _routeId = this.$route.params.courseid;
     let _userid = this.$route.params.userid;
-    this.$http.get(config.SERVER_URL + 'mine/section?training_id=' + _routeId + '&userId=' + _userid, {}, {
-      headers: {
-        "X-Requested-With": "XMLHttpRequest"
-      },
-      emulateJSON: true
-    }).then(function (response) {
-      let data = response.data;
-      this.training_name = data.training_name;
-      for (let i = 0; i < data.TrainingSections.length; i++) {
-        data.TrainingSections[i].newlink = '/Course/' + data.TrainingSections[i].link;
+    let self = this;
+    // this.$http.get(config.SERVER_URL + 'mine/section?training_id=' + _routeId + '&userId=' + _userid, {}, {
+    //   headers: {
+    //     "X-Requested-With": "XMLHttpRequest"
+    //   },
+    //   emulateJSON: true
+    // }).then(function (response) {
+    //   let data = response.data;
+    //   this.training_name = data.training_name;
+    //   for (let i = 0; i < data.TrainingSections.length; i++) {
+    //     data.TrainingSections[i].newlink = '/Course/' + data.TrainingSections[i].link;
+    //   }
+    //   this.items = data.TrainingSections;
+    // }, function (response) {
+    //         // handle error
+    // });
+    $.ajax({
+      type: 'GET',
+      url: config.SERVER_URL + 'section',
+      data: {training_id: _routeId, userId: _userid},
+      success: function (data) {
+        self.training_name = data.training_name;
+        self.items = data.TrainingSections;
       }
-      this.items = data.TrainingSections;
-    }, function (response) {
-            // handle error
     });
   },
   data () {

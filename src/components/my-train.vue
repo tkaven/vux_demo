@@ -48,15 +48,24 @@ export default {
       location.href = wxauth.goAuth();
     }
     if (!ls || ls === '读取数据有误') {
-      this.$http.get(config.AUTH_URL + '?corpId=' + corpId + '&code=' + code, {}, {
-        headers: {
-          "X-Requested-With": "XMLHttpRequest"
-        },
-        emulateJSON: true
-      }).then(function (response) {
-        console.log(response.data);
-        window.localStorage.userid = response.data.userId;
-        this.getDataFromApi(response.data.userId);
+      // this.$http.get(config.AUTH_URL + '?corpId=' + corpId + '&code=' + code, {}, {
+      //   headers: {
+      //     "X-Requested-With": "XMLHttpRequest"
+      //   },
+      //   emulateJSON: true
+      // }).then(function (response) {
+      //   console.log(response.data);
+      //   window.localStorage.userid = response.data.userId;
+      //   this.getDataFromApi(response.data.userId);
+      // });
+      $.ajax({
+        type: 'GET',
+        url: config.AUTH_URL,
+        data: {corpId: corpId, code: code},
+        success: function (data) {
+          window.localStorage.userid = data.userId;
+          self.getDataFromApi(data.userId);
+        }
       });
     } else {
       this.getDataFromApi(ls);
@@ -65,30 +74,53 @@ export default {
   methods: {
     getDataFromApi (uid) {
       let pageId = this.pageId;
-      this.$http.get(config.SERVER_URL + 'mine?page=' + pageId + '&userId=' + uid, {}, {
-        headers: {
-          "X-Requested-With": "XMLHttpRequest"
-        },
-        emulateJSON: true
-      }).then(function (response) {
-        let el = document.querySelector('.spinner-contianer');
-        let data = response.data;
-        let jsonArray = [];
-        if (data.length === 0) {
-          this.footer.title = '没有更多了';
+      let self = this;
+      // this.$http.get(config.SERVER_URL + 'mine?page=' + pageId + '&userId=' + uid, {}, {
+      //   headers: {
+      //     "X-Requested-With": "XMLHttpRequest"
+      //   },
+      //   emulateJSON: true
+      // }).then(function (response) {
+      //   let el = document.querySelector('.spinner-contianer');
+      //   let data = response.data;
+      //   let jsonArray = [];
+      //   if (data.length === 0) {
+      //     this.footer.title = '没有更多了';
+      //   }
+      //   for (let i = 0; i < data.length; i++) {
+      //     let row = {};
+      //     row.title = data[i].training_name;
+      //     row.desc = data[i].training_desc;
+      //     row.url = '/MyCourse/' + data[i].training_id + '/' + uid;
+      //     jsonArray.push(row);
+      //   }
+      //   this.list = this.list.concat(jsonArray);
+      //   el.style.display = 'none';
+      //   this.pageId++;
+      // }, function (response) {
+      //         // handle error
+      // });
+      $.ajax({
+        type: 'GET',
+        url: config.SERVER_URL,
+        data: {page: pageId, userId: uid},
+        success: function (data) {
+          let el = document.querySelector('.spinner-contianer');
+          let jsonArray = [];
+          if (data.length === 0) {
+            self.footer.title = '没有更多了';
+          }
+          for (let i = 0; i < data.length; i++) {
+            let row = {};
+            row.title = data[i].training_name;
+            row.desc = data[i].training_desc;
+            row.url = '/Course/' + data[i].training_id;
+            jsonArray.push(row);
+          }
+          self.list = self.list.concat(jsonArray);
+          el.style.display = 'none';
+          self.pageId++;
         }
-        for (let i = 0; i < data.length; i++) {
-          let row = {};
-          row.title = data[i].training_name;
-          row.desc = data[i].training_desc;
-          row.url = '/MyCourse/' + data[i].training_id + '/' + uid;
-          jsonArray.push(row);
-        }
-        this.list = this.list.concat(jsonArray);
-        el.style.display = 'none';
-        this.pageId++;
-      }, function (response) {
-              // handle error
       });
     }
   },
