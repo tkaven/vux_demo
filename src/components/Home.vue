@@ -1,12 +1,7 @@
-<style>
-.spinner-contianer{
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: #fff;
+<style scoped>
+.spinner-wrap{
   text-align: center;
-  padding-top: 45%;
+  padding-top: 2%;
 }
 .spinner-contianer .vux-spinner svg{
   width: 40px;
@@ -19,7 +14,7 @@
     <group>
         <panel header="培训资料列表" @on-click-footer="getDataFromApi" :footer="footer" :list="list" :type="type"></panel>
     </group>
-    <div class="spinner-contianer">
+    <div class="spinner-wrap" v-if = "loading">
       <spinner type="lines"></spinner>
     </div>
   </div>
@@ -75,6 +70,7 @@ export default {
     getDataFromApi () {
       let pageId = this.pageId;
       let self = this;
+      this.loading = true;
       // this.$http.get(config.SERVER_URL + '?page=' + pageId, {}, {
       //   headers: {
       //     "X-Requested-With": "XMLHttpRequest"
@@ -106,7 +102,6 @@ export default {
         url: config.SERVER_URL,
         data: {page: pageId},
         success: function (data) {
-          let el = document.querySelector('.spinner-contianer');
           let jsonArray = [];
           if (data.length === 0) {
             self.footer.title = '没有更多了';
@@ -119,14 +114,15 @@ export default {
             jsonArray.push(row);
           }
           self.list = self.list.concat(jsonArray);
-          el.style.display = 'none';
           self.pageId++;
+          self.loading = false;
         }
       });
     }
   },
   data () {
     return {
+      loading: true,
       pageId: 0,
       list: [],
       footer: {
