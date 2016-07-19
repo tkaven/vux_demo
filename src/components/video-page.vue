@@ -1,5 +1,6 @@
 <template>
-  <x-header :left-options="{showBack: true, backText: ''}">{{list.section_name}}</x-header>
+  <x-header :left-options="{showBack: true, backText: ''}">{{list.section_name}}
+  <a slot="right" v-link="{ path: '/My' }">我的</a></x-header>
   <article class="weui_article" style="background:#fff">
     <div class="weui_panel weui_panel_access" style="margin-bottom:15px;">
       <div class="weui_panel_hd">视频培训资料</div>

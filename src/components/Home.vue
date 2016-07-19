@@ -9,7 +9,8 @@
 }
 </style>
 <template>
-    <x-header :left-options="{showBack: true, backText: ''}">培训课程</x-header>
+    <x-header :left-options="{showBack: true, backText: ''}">培训课程
+    <a slot="right" v-link="{ path: '/My' }">我的</a></x-header>
   <div>
     <group>
         <panel header="培训资料列表" @on-click-footer="getDataFromApi" :footer="footer" :list="list" :type="type"></panel>
@@ -23,7 +24,6 @@
 <script>
 import $ from 'jquery';
 import config from '../utils/config.js';
-import wxauth from '../utils/wxauth.js';
 import Group from 'vux/src/components/group';
 import Panel from 'vux/src/components/panel';
 import XHeader from 'vux/src/components/x-header';
@@ -37,22 +37,21 @@ export default {
   },
   ready: function () {
     let self = this;
-    let code = wxauth.getSingleQueryString('code');
-    let corpId = wxauth.getSingleQueryString('corpId');
-    let ls = window.localStorage.userid;
-    if (!code) {
-      location.href = wxauth.goAuth();
-    }
-    if (!ls || ls === '读取数据有误') {
-      $.ajax({
-        type: 'GET',
-        url: config.AUTH_URL,
-        data: {corpId: corpId, code: code},
-        success: function (data) {
+    let code = window.localStorage.code;
+    let corpId = window.localStorage.corpId;
+    // let ls = window.localStorage.userid;
+    // if (!ls || ls === '读取数据有误') {
+    $.ajax({
+      type: 'GET',
+      url: config.AUTH_URL,
+      data: {corpId: corpId, code: code},
+      success: function (data) {
+        if (data.userId !== '读取数据有误') {
           window.localStorage.userid = data.userId;
-          self.getDataFromApi();
         }
-      });
+        self.getDataFromApi();
+      }
+    });
       // this.$http.get(config.AUTH_URL + '?corpId=' + corpId + '&code=' + code, {}, {
       //   headers: {
       //     "X-Requested-With": "XMLHttpRequest"
@@ -62,8 +61,15 @@ export default {
       //   window.localStorage.userid = response.data.userId;
       //   this.getDataFromApi();
       // });
-    } else {
-      this.getDataFromApi();
+    // } else {
+    //   this.getDataFromApi();
+    // }
+  },
+  computed: {
+    footer: function () {
+      return this.list.length > 4 ? {
+        title: this.foottitle
+      } : null;
     }
   },
   methods: {
@@ -104,7 +110,7 @@ export default {
         success: function (data) {
           let jsonArray = [];
           if (data.length === 0) {
-            self.footer.title = '没有更多了';
+            self.foottitle = '没有更多了';
           }
           for (let i = 0; i < data.length; i++) {
             let row = {};
@@ -125,9 +131,7 @@ export default {
       loading: true,
       pageId: 0,
       list: [],
-      footer: {
-        title: '查看更多'
-      }
+      foottitle: '加载更多'
     };
   }
 };

@@ -14,7 +14,8 @@
 }
 </style>
 <template>
-    <x-header :left-options="{showBack: true, backText: ''}">我的培训课程</x-header>
+    <x-header :left-options="{showBack: true, backText: ''}">我的培训课程
+    <a slot="right" v-link="{ path: '/My' }">我的</a></x-header>
   <div>
     <group>
         <panel header="我的培训资料列表" @on-click-footer="getDataFromApi" :footer="footer" :list="list" :type="type"></panel>
@@ -45,9 +46,6 @@ export default {
     let corpId = wxauth.getSingleQueryString('corpId');
     let ls = window.localStorage.userid;
     let self = this;
-    if (!code) {
-      location.href = wxauth.goAuth();
-    }
     if (!ls || ls === '读取数据有误') {
       // this.$http.get(config.AUTH_URL + '?corpId=' + corpId + '&code=' + code, {}, {
       //   headers: {
@@ -65,12 +63,21 @@ export default {
         async: false,
         data: {corpId: corpId, code: code},
         success: function (data) {
-          window.localStorage.userid = data.userId;
+          if (data.userId !== '读取数据有误') {
+            window.localStorage.userid = data.userId;
+          }
           self.getDataFromApi(data.userId);
         }
       });
     } else {
       this.getDataFromApi(ls);
+    }
+  },
+  computed: {
+    footer: function () {
+      return this.list.length > 4 ? {
+        title: this.foottitle
+      } : null;
     }
   },
   methods: {
@@ -110,7 +117,7 @@ export default {
           let el = document.querySelector('.spinner-contianer');
           let jsonArray = [];
           if (data.length === 0) {
-            self.footer.title = '没有更多了';
+            self.foottitle = '没有更多了';
           }
           for (let i = 0; i < data.length; i++) {
             let row = {};
@@ -131,9 +138,7 @@ export default {
       pageId: 0,
       userid: 0,
       list: [],
-      footer: {
-        title: '查看更多'
-      }
+      foottitle: '加载更多'
     };
   }
 };

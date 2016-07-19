@@ -8,11 +8,14 @@ import Video from './components/video-page';
 import Pdf from './components/pdf-page';
 import MyTrain from './components/my-train';
 import MyCourse from './components/my-course';
+import wxauth from './utils/wxauth.js';
 
 Vue.use(vueResource);
 Vue.use(VueRouter);
 
-const router = new VueRouter();
+const router = new VueRouter({
+  hashbang: false
+});
 
 router.map({
   '/': {
@@ -34,5 +37,7 @@ router.map({
     component: MyCourse
   }
 });
+wxauth.goAuth(function () {
+  router.start(App, '#app');
+});
 
-router.start(App, '#app');

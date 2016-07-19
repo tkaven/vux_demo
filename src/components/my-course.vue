@@ -5,7 +5,9 @@
   }
 </style>
 <template>
-  <x-header :left-options="{showBack: true, backText: ''}">{{training_name}}</x-header>
+  <x-header :left-options="{showBack: true, backText: ''}">{{training_name}}
+    <a slot="right" v-link="{ path: '/My' }">我的</a>
+  </x-header>
   <div>
     <group title="我的课程列表">
       <cell v-for="item in items" :title="item.section_name" :link="item.newlink" value="">
