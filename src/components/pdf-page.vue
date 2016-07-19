@@ -13,8 +13,6 @@
           </div>
       </div>
     </div>
-    <video id="vid" width="400" controls="controls"  :src="list.file_path">
-    </video>
     <a href={{list.file_path}}>资料阅读(下载)</a>
   </article>
 </template>
