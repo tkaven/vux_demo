@@ -36,7 +36,7 @@ export default {
     // });
     $.ajax({
       type: 'GET',
-      url: config.SERVER_URL,
+      url: config.SERVER_URL + 'section',
       data: {training_id: self.$route.params.courseid},
       success: function (data) {
         let res = data.TrainingSections;

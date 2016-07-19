@@ -44,6 +44,7 @@ export default {
     let code = wxauth.getSingleQueryString('code');
     let corpId = wxauth.getSingleQueryString('corpId');
     let ls = window.localStorage.userid;
+    let self = this;
     if (!code) {
       location.href = wxauth.goAuth();
     }
@@ -61,6 +62,7 @@ export default {
       $.ajax({
         type: 'GET',
         url: config.AUTH_URL,
+        async: false,
         data: {corpId: corpId, code: code},
         success: function (data) {
           window.localStorage.userid = data.userId;
