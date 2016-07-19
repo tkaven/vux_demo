@@ -104,7 +104,7 @@ export default {
       // });
       $.ajax({
         type: 'GET',
-        url: config.SERVER_URL,
+        url: config.SERVER_URL + 'mine',
         data: {page: pageId, userId: uid},
         success: function (data) {
           let el = document.querySelector('.spinner-contianer');
@@ -116,7 +116,7 @@ export default {
             let row = {};
             row.title = data[i].training_name;
             row.desc = data[i].training_desc;
-            row.url = '/Course/' + data[i].training_id;
+            row.url = '/MyCourse/' + data[i].training_id + '/' + uid;
             jsonArray.push(row);
           }
           self.list = self.list.concat(jsonArray);
