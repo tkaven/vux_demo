@@ -49,10 +49,13 @@ export default {
     // });
     $.ajax({
       type: 'GET',
-      url: config.SERVER_URL + 'section',
+      url: config.SERVER_URL + 'mine/section',
       data: {training_id: _routeId, userId: _userid},
       success: function (data) {
         self.training_name = data.training_name;
+        for (let i = 0; i < data.TrainingSections.length; i++) {
+          data.TrainingSections[i].newlink = '/Course/' + data.TrainingSections[i].link;
+        }
         self.items = data.TrainingSections;
       }
     });
