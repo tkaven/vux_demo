@@ -1,21 +1,31 @@
 <style>
-.container{ height:100%; display:-webkit-flex; -webkit-flex-direction:column;}
-.pdf-page{
-  position: fixed;
-  display: block;
-  width: 100%;
-  height: 100%;
-}
 </style>
 <template>
-  <p class="container">
-    <embed :src="list.file_path" class="pdf-page">
-  </p>
+  <x-header :left-options="{showBack: true, backText: ''}">{{list.section_name}}
+  <a slot="right" v-link="{ path: '/My' }">我的</a></x-header>
+  <article class="weui_article" style="background:#fff">
+    <div class="weui_panel weui_panel_access" style="margin-bottom:15px;">
+      <div class="weui_panel_hd">Pdf培训资料</div>
+      <div class="weui_panel_bd">
+          <div class="weui_media_box weui_media_text">
+              <h4 class="weui_media_title">{{list.section_name}}</h4>
+              <p class="weui_media_desc">{{list.section_desc}}</p>
+          </div>
+      </div>
+    </div>
+    <video id="vid" width="400" controls="controls"  :src="list.file_path">
+    </video>
+    <a href={{list.file_path}}>资料阅读(下载)</a>
+  </article>
 </template>
 <script>
 import $ from 'jquery';
 import config from '../utils/config.js';
+import XHeader from 'vux/src/components/x-header';
 export default {
+  components: {
+    XHeader
+  },
   ready: function () {
     let self = this;
     this.setLocal();
